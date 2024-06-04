@@ -1,0 +1,23 @@
+import sqlite3
+import csv
+
+# Connect to the SQLite database
+conn = sqlite3.connect('fitness.db')
+cursor = conn.cursor()
+
+# Function to insert data from CSV file into table
+def insert_data_from_csv(csv_filename, table_name):
+    with open(csv_filename, 'r', newline='', encoding='utf-8') as file:
+        csv_reader = csv.reader(file)
+        next(csv_reader)  # Skip header row
+        for row in csv_reader:
+            cursor.execute(f"INSERT INTO {table_name} (meal_type, meal, calories) VALUES (?, ?, ?)", row)
+
+# Insert data from CSV files into tables
+insert_data_from_csv('veg.csv', 'VegRecipe')
+insert_data_from_csv('non-veg.csv', 'NonVegRecipe')
+insert_data_from_csv('vegan.csv', 'VeganRecipe')
+
+# Commit changes and close connection
+conn.commit()
+conn.close()
